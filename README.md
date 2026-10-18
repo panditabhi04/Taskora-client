@@ -51,7 +51,8 @@ Check each project's `package.json` for the available scripts.
 ### Backend
 
 - `PORT`:  3000.
-- `MONGODB_URL`:"mongodb+srv://abhishekpandit1104_db_user\:MY_DATA_BASE\_ PASSWORD\@taskoracluster.lqzov7t.mongodb.net/".
+- `MONGODB_URL`:
+"mongodb+srv://abhishekpandit1104_db_user\:MYDATABASEPASSWORD\@taskoracluster.lqzov7t.mongodb.net/".
 
 ### Frontend
 
@@ -166,7 +167,18 @@ The backend is deployed on Render, and the frontend can be deployed on Vercel.
 
 For production, set `VITE_API_URL` to the deployed backend API URL and configure the backend's database connection and CORS settings appropriately.
 
+##  Frontend .env.example :
 
+ VITE_API_URL=http://localhost:3000/api
+
+## Backend .env.example :
+PORT=3000
+MONGODB_URL=mongodb+srv://<username>:<password>@<cluster-url>/<database_name>?retryWrites=true&w=majority
+
+
+
+
+## Q&A
 
 (1) where you validate status transitions and why?
 
