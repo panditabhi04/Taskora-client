@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createEmployeeAPI } from '../../api.js';
 import Toast from '../../common/Toast.jsx';
@@ -38,6 +38,15 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
   const [formError, setFormError] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
+  // Get today's local date string in YYYY-MM-DD
+  const todayString = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }, []);
+
   const {
     employeeId,
     fullName,
@@ -55,6 +64,52 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    setFormError('');
+  };
+
+  const handleJoiningDateChange = (e) => {
+    const val = e.target.value;
+    if (val && val < todayString) {
+      const msg = 'Joining Date cannot be in the past.';
+      setFormError(msg);
+      setToast({ show: true, message: msg, type: 'error' });
+      setForm((prev) => ({ ...prev, joiningDate: '' }));
+      return;
+    }
+    setForm((prev) => ({ ...prev, joiningDate: val }));
+    setFormError('');
+  };
+
+  const handleLeaveStartChange = (e) => {
+    const val = e.target.value;
+    if (val && val < todayString) {
+      const msg = 'Leave Start Date cannot be in the past.';
+      setFormError(msg);
+      setToast({ show: true, message: msg, type: 'error' });
+      setForm((prev) => ({ ...prev, leaveStart: '' }));
+      return;
+    }
+    setForm((prev) => ({
+      ...prev,
+      leaveStart: val,
+      leaveEnd: prev.leaveEnd && val && prev.leaveEnd < val ? '' : prev.leaveEnd,
+    }));
+    setFormError('');
+  };
+
+  const handleLeaveEndChange = (e) => {
+    const val = e.target.value;
+    const minAllowed = leaveStart || todayString;
+    if (val && val < minAllowed) {
+      const msg = leaveStart
+        ? 'Leave End Date must be on or after Leave Start Date.'
+        : 'Leave End Date cannot be in the past.';
+      setFormError(msg);
+      setToast({ show: true, message: msg, type: 'error' });
+      setForm((prev) => ({ ...prev, leaveEnd: '' }));
+      return;
+    }
+    setForm((prev) => ({ ...prev, leaveEnd: val }));
     setFormError('');
   };
 
@@ -123,9 +178,21 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
       setToast({ show: true, message: msg, type: 'error' });
       return false;
     }
+    if (joiningDate < todayString) {
+      const msg = 'Joining Date cannot be in the past.';
+      setFormError(msg);
+      setToast({ show: true, message: msg, type: 'error' });
+      return false;
+    }
     if (status === 'On Leave') {
       if (!leaveStart) {
         const msg = 'Leave Start date is required when employee is On Leave.';
+        setFormError(msg);
+        setToast({ show: true, message: msg, type: 'error' });
+        return false;
+      }
+      if (leaveStart < todayString) {
+        const msg = 'Leave Start Date cannot be in the past.';
         setFormError(msg);
         setToast({ show: true, message: msg, type: 'error' });
         return false;
@@ -136,7 +203,7 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
         setToast({ show: true, message: msg, type: 'error' });
         return false;
       }
-      if (new Date(leaveEnd) < new Date(leaveStart)) {
+      if (leaveEnd < leaveStart) {
         const msg = 'Leave End date must be on or after Leave Start date.';
         setFormError(msg);
         setToast({ show: true, message: msg, type: 'error' });
@@ -340,8 +407,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               <input
                 type="date"
                 name="joiningDate"
+                min={todayString}
                 value={joiningDate}
-                onChange={handleChange}
+                onChange={handleJoiningDateChange}
                 className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
               />
             </div>
@@ -384,8 +452,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
                   <input
                     type="date"
                     name="leaveStart"
+                    min={todayString}
                     value={leaveStart}
-                    onChange={handleChange}
+                    onChange={handleLeaveStartChange}
                     className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
                   />
                 </div>
@@ -396,9 +465,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
                   <input
                     type="date"
                     name="leaveEnd"
-                    min={leaveStart}
+                    min={leaveStart || todayString}
                     value={leaveEnd}
-                    onChange={handleChange}
+                    onChange={handleLeaveEndChange}
                     className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
                   />
                 </div>
