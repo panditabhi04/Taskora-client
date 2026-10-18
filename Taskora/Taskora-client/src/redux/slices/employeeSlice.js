@@ -87,7 +87,6 @@ export const employeeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Employees
       .addCase(fetchEmployees.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -102,7 +101,6 @@ export const employeeSlice = createSlice({
         state.error = action.payload || 'Failed to fetch employees';
       })
 
-      // Create Employee
       .addCase(createEmployee.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -122,7 +120,6 @@ export const employeeSlice = createSlice({
         state.error = action.payload || 'Failed to create employee';
       })
 
-      // Update Employee
       .addCase(updateEmployee.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -149,7 +146,6 @@ export const employeeSlice = createSlice({
         state.error = action.payload || 'Failed to update employee';
       })
 
-      // Delete Employee
       .addCase(deleteEmployee.fulfilled, (state, action) => {
         state.employees = state.employees.filter(
           (emp) => emp._id !== action.payload.employeeId && emp.id !== action.payload.employeeId

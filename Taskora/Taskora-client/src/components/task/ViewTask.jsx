@@ -38,7 +38,6 @@ const ViewTask = ({ isOpen = false, task = null, onClose, onEdit }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
-        {/* Header */}
         <div className="px-5 py-4 bg-[#212529] text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <span className="font-bold text-base sm:text-lg tracking-tight">
@@ -133,7 +132,7 @@ const ViewTask = ({ isOpen = false, task = null, onClose, onEdit }) => {
             )}
           </div>
 
-          {/* Description */}
+          
           <div>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
               Description

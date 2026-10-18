@@ -125,19 +125,22 @@ const EmployeeTable = ({
                 </tr>
               ) : (
                 employees.map((emp) => {
+                  const skillsList = Array.isArray(emp.skills)
+                    ? emp.skills.filter((sk) => typeof sk === 'string' && sk.trim().length > 0)
+                    : typeof emp.skills === 'string' && emp.skills.trim().length > 0
+                    ? emp.skills.split(',').map((sk) => sk.trim()).filter(Boolean)
+                    : [];
+
                   return (
                     <tr
                       key={emp._id || emp.id || emp.employeeId}
                       className="hover:bg-slate-50/80 transition-colors"
                     >
-                      {/* Employee ID */}
                       <td className="py-3.5 px-4 font-semibold text-slate-800 whitespace-nowrap">
                         <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-xs font-mono font-bold text-slate-700">
                           {emp.employeeId}
                         </span>
                       </td>
-
-                      {/* Name */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2.5">
                           <div className="w-8 h-8 rounded-full bg-[#853A3A]/10 text-[#853A3A] font-bold text-xs flex items-center justify-center border border-[#853A3A]/20">
@@ -153,14 +156,10 @@ const EmployeeTable = ({
                           </div>
                         </div>
                       </td>
-
-                      {/* Contact */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="text-slate-800 font-medium">{emp.email}</div>
                         <div className="text-[11px] text-slate-400">{emp.phone}</div>
                       </td>
-
-                      {/* Department & Role */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="font-medium text-slate-800">{emp.role}</div>
                         <div className="text-[11px] text-slate-500 font-medium">
@@ -168,7 +167,6 @@ const EmployeeTable = ({
                         </div>
                       </td>
 
-                      {/* Status + Leave dates if On Leave */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide shadow-2xs ${getStatusBadgeStyle(
@@ -184,16 +182,13 @@ const EmployeeTable = ({
                         )}
                       </td>
 
-                      {/* Joining Date */}
                       <td className="py-3.5 px-4 whitespace-nowrap text-slate-600 font-medium">
                         {formatDate(emp.joiningDate)}
                       </td>
-
-                      {/* Skills */}
                       <td className="py-3.5 px-4 max-w-[200px]">
-                        {Array.isArray(emp.skills) && emp.skills.length > 0 ? (
+                        {skillsList.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
-                            {emp.skills.slice(0, 3).map((sk) => (
+                            {skillsList.slice(0, 3).map((sk) => (
                               <span
                                 key={sk}
                                 className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px] font-medium border border-slate-200"
@@ -201,21 +196,19 @@ const EmployeeTable = ({
                                 {sk}
                               </span>
                             ))}
-                            {emp.skills.length > 3 && (
+                            {skillsList.length > 3 && (
                               <span className="text-[10px] text-slate-400 self-center font-bold">
-                                +{emp.skills.length - 3}
+                                +{skillsList.length - 3}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <span className="text-slate-400 text-xs">-</span>
+                          <span className="text-slate-400 font-semibold text-sm">-</span>
                         )}
                       </td>
 
-                      {/* Actions: View, Edit, Delete Icons */}
                       <td className="py-3.5 px-4 text-right pr-6 whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1.5">
-                          {/* View Icon */}
                           <button
                             type="button"
                             onClick={() => {
@@ -235,7 +228,6 @@ const EmployeeTable = ({
                             </svg>
                           </button>
 
-                          {/* Edit Icon */}
                           <button
                             type="button"
                             onClick={() => onEditEmployee && onEditEmployee(emp)}
@@ -248,7 +240,6 @@ const EmployeeTable = ({
                             </svg>
                           </button>
 
-                          {/* Delete Icon */}
                           <button
                             type="button"
                             onClick={() => setDeletingEmployee(emp)}
@@ -270,7 +261,6 @@ const EmployeeTable = ({
           </table>
         </div>
 
-        {/* Pagination Footer */}
         {!loading && employees.length > 0 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3.5 pb-3 px-4 border-t border-slate-100 text-xs sm:text-sm select-none">
             <div className="text-slate-600 font-normal text-center sm:text-left">
@@ -330,7 +320,6 @@ const EmployeeTable = ({
         )}
       </div>
 
-      {/* Employee Delete Confirmation Modal */}
       <EmployeeDeleteModal
         isOpen={Boolean(deletingEmployee)}
         employee={deletingEmployee}
@@ -340,8 +329,6 @@ const EmployeeTable = ({
           if (onDeleteEmployee) onDeleteEmployee(deletedEmp);
         }}
       />
-
-      {/* Employee View Modal */}
       <ViewEmployee
         isOpen={Boolean(viewingEmployee)}
         employee={viewingEmployee}

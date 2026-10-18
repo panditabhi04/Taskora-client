@@ -3,14 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { updateTaskAPI, getEmployeesAPI } from '../../api.js';
 import Toast from '../../common/Toast.jsx';
 
-const DEFAULT_EMPLOYEES = [
-  { _id: 'emp_1', id: 'emp_1', fullName: 'Rahul Sharma', department: 'Development', status: 'Active', activeTasks: 3 },
-  { _id: 'emp_2', id: 'emp_2', fullName: 'Priya Patil', department: 'Design', status: 'Active', activeTasks: 2 },
-  { _id: 'emp_3', id: 'emp_3', fullName: 'Amit Joshi', department: 'QA', status: 'Active', activeTasks: 1 },
-  { _id: 'emp_4', id: 'emp_4', fullName: 'Sneha Kulkarni', department: 'Sales', status: 'Inactive', activeTasks: 0 },
-  { _id: 'emp_5', id: 'emp_5', fullName: 'Vikram Mehta', department: 'HR', status: 'On Leave', activeTasks: 0 },
-];
-
 const priorityOptions = ['Low', 'Medium', 'High', 'Critical'];
 const departmentOptions = ['Development', 'Design', 'QA', 'HR', 'Sales', 'Engineering'];
 
@@ -25,22 +17,31 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
   const [dueDate, setDueDate] = useState('');
   const [description, setDescription] = useState('');
 
-  const [employees, setEmployees] = useState(DEFAULT_EMPLOYEES);
+  const [employees, setEmployees] = useState([]);
+  const [loadingEmployees, setLoadingEmployees] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
-  // Fetch real employee list from backend API
   useEffect(() => {
     let isMounted = true;
     const fetchEmployees = async () => {
+      setLoadingEmployees(true);
       try {
         const data = await getEmployeesAPI();
-        if (isMounted && Array.isArray(data) && data.length > 0) {
-          setEmployees(data);
+        const list = Array.isArray(data) ? data : (data?.employees || data?.data || []);
+        if (isMounted) {
+          setEmployees(Array.isArray(list) ? list : []);
         }
       } catch (err) {
-        console.warn('Using default employee list fallback:', err.message);
+        console.error('Failed to load employees:', err.message);
+        if (isMounted) {
+          setEmployees([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingEmployees(false);
+        }
       }
     };
     fetchEmployees();
@@ -49,7 +50,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
     };
   }, []);
 
-  // Pre-fill form when task prop is available
   useEffect(() => {
     if (task) {
       setTitle(task.title || '');
@@ -75,13 +75,11 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
     }
   }, [task]);
 
-  // Business Rule: Completed and Cancelled tasks cannot be edited
   const isTaskNonEditable = useMemo(() => {
     const s = (task?.status || '').toLowerCase();
     return s === 'completed' || s === 'cancelled';
   }, [task?.status]);
 
-  // Find currently selected employee object
   const selectedEmployeeObj = useMemo(() => {
     if (!assignedEmployee) return null;
     return employees.find(
@@ -94,7 +92,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
     );
   }, [assignedEmployee, employees]);
 
-  // Check if current assignee is already the original assignee for this task
   const isOriginalAssignee = useMemo(() => {
     if (!task || !selectedEmployeeObj) return false;
     const origId =
@@ -109,10 +106,16 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
     );
   }, [task, selectedEmployeeObj]);
 
-  // Capacity rule: If reassigning to a DIFFERENT employee who already has >= 3 active tasks
+  useEffect(() => {
+    if (selectedEmployeeObj?.department) {
+      setDepartment(selectedEmployeeObj.department);
+    } else if (!assignedEmployee) {
+      setDepartment('');
+    }
+  }, [selectedEmployeeObj, assignedEmployee]);
+
   const isEmployeeOverloaded = useMemo(() => {
     if (!selectedEmployeeObj) return false;
-    // If this employee is already assigned to this active task, they hold it already
     if (isOriginalAssignee) return false;
 
     const count = selectedEmployeeObj.activeTasks ?? selectedEmployeeObj.activeTaskCount;
@@ -134,12 +137,10 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
     return false;
   }, [selectedEmployeeObj, isOriginalAssignee, existingTasks, task]);
 
-  // Inactive employee check
   const isEmployeeInactive = useMemo(() => {
     return selectedEmployeeObj?.status?.toLowerCase() === 'inactive';
   }, [selectedEmployeeObj]);
 
-  // On leave conflict check
   const isEmployeeOnLeaveConflict = useMemo(() => {
     if (!selectedEmployeeObj || !startDate) return false;
     if (selectedEmployeeObj.status?.toLowerCase() !== 'on leave') return false;
@@ -173,9 +174,9 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
         setToast({ show: true, message: msg, type: 'error' });
       }
 
-      if (emp.department && !department) {
-        setDepartment(emp.department);
-      }
+      setDepartment(emp.department || '');
+    } else {
+      setDepartment('');
     }
   };
 
@@ -273,7 +274,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
       const employeeIdPayload =
         selectedEmployeeObj?._id || selectedEmployeeObj?.id || assignedEmployee;
 
-      // Note: completedDate is NEVER sent by frontend per backend rules
       const payload = {
         title: title.trim(),
         description: description.trim(),
@@ -284,7 +284,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
         dueDate,
       };
 
-      // PATCH request to /api/task/:id
       const result = await updateTaskAPI(taskId, payload);
 
       setToast({
@@ -293,7 +292,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
         type: 'success',
       });
 
-      // Seamless return to TaskTable without full page refresh
       if (onTaskUpdated) {
         onTaskUpdated(result?.task || result?.data || result);
       } else if (onBack) {
@@ -331,7 +329,7 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto py-4 sm:py-6 px-2 sm:px-4">
-      {/* Toast Notification */}
+      
       {toast.show && (
         <Toast
           message={toast.message}
@@ -340,7 +338,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
         />
       )}
 
-      {/* Back button */}
       <div className="mb-3">
         <button
           type="button"
@@ -352,15 +349,11 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
         </button>
       </div>
 
-      {/* Centered Heading */}
       <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 text-center mb-6 tracking-tight">
         Edit Task {task?.taskCode || task?.taskId ? `(${task.taskCode || task.taskId})` : ''}
       </h1>
-
-      {/* Form Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Row 1: Title & Assigned Employee */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -385,31 +378,42 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
               </label>
               <div className="relative">
                 <select
-                  disabled={isTaskNonEditable}
+                  disabled={isTaskNonEditable || loadingEmployees || employees.length === 0}
                   value={assignedEmployee}
                   onChange={handleEmployeeChange}
-                  className="w-full appearance-none bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 pr-8 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer disabled:bg-slate-100 disabled:text-slate-500"
+                  className="w-full appearance-none bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 pr-8 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed"
                 >
-                  <option value="">Select...</option>
-                  {employees.map((emp) => {
-                    const empId = emp._id || emp.id || emp.employeeId;
-                    const empName = emp.fullName || emp.name || emp.employeeName;
-                    const activeCount = emp.activeTasks ?? emp.activeTaskCount ?? 0;
-                    return (
-                      <option key={empId} value={empId}>
-                        {empName} ({emp.status || 'Active'}) {activeCount > 0 ? `[${activeCount} tasks]` : ''}
-                      </option>
-                    );
-                  })}
+                  {loadingEmployees ? (
+                    <option value="">Loading employees...</option>
+                  ) : employees.length === 0 ? (
+                    <option value="">No employees available</option>
+                  ) : (
+                    <>
+                      <option value="">Select Employee...</option>
+                      {employees.map((emp) => {
+                        const empId = emp._id || emp.id || emp.employeeId;
+                        const empName = emp.fullName || emp.name || emp.employeeName;
+                        const activeCount = emp.activeTasks ?? emp.activeTaskCount ?? 0;
+                        return (
+                          <option key={empId} value={empId}>
+                            {empName} ({emp.status || 'Active'}) {activeCount > 0 ? `[${activeCount} tasks]` : ''}
+                          </option>
+                        );
+                      })}
+                    </>
+                  )}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-600 text-xs">
                   ▼
                 </div>
               </div>
+              {!loadingEmployees && employees.length === 0 && (
+                <p className="mt-1.5 text-xs text-amber-700 font-medium flex items-center gap-1">
+                  <span>⚠️</span> No employees found in system.
+                </p>
+              )}
             </div>
           </div>
-
-          {/* Row 2: Priority & Department */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -444,20 +448,30 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
               </label>
               <div className="relative">
                 <select
-                  disabled={isTaskNonEditable}
+                  disabled={isTaskNonEditable || !assignedEmployee || Boolean(selectedEmployeeObj?.department)}
                   value={department}
                   onChange={(e) => {
                     setDepartment(e.target.value);
                     setFormError('');
                   }}
-                  className="w-full appearance-none bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 pr-8 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer disabled:bg-slate-100 disabled:text-slate-500"
+                  className="w-full appearance-none bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 pr-8 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer disabled:bg-slate-100 disabled:text-slate-700 disabled:cursor-not-allowed"
                 >
-                  <option value="">Select...</option>
-                  {departmentOptions.map((dept) => (
-                    <option key={dept} value={dept}>
-                      {dept}
+                  {!assignedEmployee ? (
+                    <option value="">Select employee first</option>
+                  ) : selectedEmployeeObj?.department ? (
+                    <option value={selectedEmployeeObj.department}>
+                      {selectedEmployeeObj.department}
                     </option>
-                  ))}
+                  ) : (
+                    <>
+                      <option value="">Select...</option>
+                      {departmentOptions.map((dept) => (
+                        <option key={dept} value={dept}>
+                          {dept}
+                        </option>
+                      ))}
+                    </>
+                  )}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-600 text-xs">
                   ▼
@@ -466,7 +480,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
             </div>
           </div>
 
-          {/* Row 3: Start Date & Due Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -502,7 +515,6 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
             </div>
           </div>
 
-          {/* Row 4: Description */}
           <div>
             <label className="block text-sm font-bold text-slate-800 mb-2">
               Description
@@ -520,14 +532,12 @@ const EditTask = ({ task, onBack, onTaskUpdated, existingTasks = [] }) => {
             />
           </div>
 
-          {/* Red banner validation error */}
           {Boolean(bannerMessage) && (
             <div className="rounded-lg border border-[#a33a3a] bg-[#fbf2f2] px-4 py-3 text-xs sm:text-sm text-[#853A3A] font-medium animate-fadeIn">
               {bannerMessage}
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="pt-2 flex flex-col-reverse sm:flex-row items-center gap-3">
             <button
               type="button"

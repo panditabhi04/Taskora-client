@@ -15,7 +15,6 @@ const Navbar = ({
   return (
     <header className="w-full bg-[#212529] border-b border-[#2b3035] shadow-sm sticky top-0 left-0 z-50">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between box-border">
-        {/* Desktop & Tablet Navigation */}
         <div className="flex items-center">
           <nav className="hidden md:flex items-center gap-6 lg:gap-8" aria-label="Main Navigation">
             {navItems.map((item) => (
@@ -35,7 +34,6 @@ const Navbar = ({
             ))}
           </nav>
 
-          {/* Mobile menu hamburger button */}
           <button
             type="button"
             className="md:hidden text-gray-300 hover:text-white p-1.5 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500"
@@ -55,7 +53,6 @@ const Navbar = ({
           </button>
         </div>
 
-        {/* Center / Brand Title */}
         <div className="flex-1 flex justify-center items-center px-2 sm:px-4">
           <Link
             to="/"
@@ -65,11 +62,9 @@ const Navbar = ({
           </Link>
         </div>
 
-        {/* Spacer for symmetrical layout */}
         <div className="hidden md:flex items-center min-w-[40px] justify-end" />
       </div>
 
-      {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-[#1a1d20] border-t border-[#2b3035] px-4 pt-2 pb-3 space-y-1 shadow-lg animate-fadeIn">
           {navItems.map((item) => (

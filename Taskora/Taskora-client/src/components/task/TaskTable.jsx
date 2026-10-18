@@ -214,8 +214,6 @@ const TaskTable = ({
                           )}
                         </div>
                       </td>
-
-                      {/* 6. Due Date Column */}
                       <td className="py-3.5 px-4 whitespace-nowrap font-medium">
                         {isOverdue ? (
                           <span className="text-[#a32222] font-semibold">{task.dueDate}</span>
@@ -224,7 +222,7 @@ const TaskTable = ({
                         )}
                       </td>
 
-                      {/* 7. Action Column with 3-dots icon */}
+                      
                       <td className="py-3.5 px-4 text-right pr-6 whitespace-nowrap">
                         <div className="relative inline-block text-left">
                           <button
@@ -238,13 +236,13 @@ const TaskTable = ({
                             aria-label="Open task actions"
                             aria-expanded={isActionOpen}
                           >
-                            {/* Vertical 3 dots icon */}
+                            
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                             </svg>
                           </button>
 
-                          {/* Action Menu Dropdown */}
+                            
                           {isActionOpen && (
                             <div
                               className={`absolute right-0 w-32 bg-white rounded-md shadow-xl border border-slate-200 py-1.5 z-50 animate-fadeIn text-left ${
@@ -307,10 +305,10 @@ const TaskTable = ({
         </div>
       </div>
 
-      {/* Embedded Pagination Component */}
+      
       <TaskPagination {...paginationProps} />
 
-      {/* Task Delete Confirmation Modal */}
+      
       <TaskDeleteModal
         isOpen={Boolean(deletingTask)}
         task={deletingTask}

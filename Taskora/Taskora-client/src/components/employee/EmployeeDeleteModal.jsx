@@ -39,7 +39,6 @@ const EmployeeDeleteModal = ({ isOpen, employee, onClose, onSuccess }) => {
         className="bg-white rounded-xl shadow-2xl max-w-md w-full border border-slate-200 overflow-hidden animate-scaleIn"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-rose-50/50">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-lg font-bold">
@@ -68,14 +67,12 @@ const EmployeeDeleteModal = ({ isOpen, employee, onClose, onSuccess }) => {
           </button>
         </div>
 
-        {/* Body */}
         <div className="p-5 space-y-4">
           <p className="text-sm text-slate-700">
             Are you sure you want to delete employee{' '}
             <strong className="text-slate-900 font-bold">{employee.fullName}</strong>?
           </p>
 
-          {/* Employee Info Card */}
           <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs">
             <div className="flex items-center justify-between">
               <span className="font-mono font-bold text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200">
@@ -113,8 +110,6 @@ const EmployeeDeleteModal = ({ isOpen, employee, onClose, onSuccess }) => {
               </div>
             )}
           </div>
-
-          {/* Assignment Rule Warning */}
           {hasActiveTasks && (
             <div className="p-3 rounded-md bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
               <span className="text-base leading-none">⚠️</span>
@@ -126,7 +121,7 @@ const EmployeeDeleteModal = ({ isOpen, employee, onClose, onSuccess }) => {
             </div>
           )}
 
-          {/* Error Banner */}
+          
           {error && (
             <div className="p-3 rounded-md bg-rose-50 border border-rose-200 text-xs text-rose-700 font-medium">
               ⚠️ {error}
@@ -134,7 +129,7 @@ const EmployeeDeleteModal = ({ isOpen, employee, onClose, onSuccess }) => {
           )}
         </div>
 
-        {/* Footer Actions */}
+    
         <div className="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
           <button
             type="button"

@@ -28,7 +28,6 @@ export const useEmployeeController = (initialParams = {}) => {
   const [department, setDepartment] = useState(urlDepartment);
   const [status, setStatus] = useState(urlStatus);
 
-  // Debounce search input by 400ms
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -37,7 +36,6 @@ export const useEmployeeController = (initialParams = {}) => {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // When debounced search or filters change, reset page to 1
   const prevDebouncedSearchRef = useRef(debouncedSearch);
   useEffect(() => {
     if (prevDebouncedSearchRef.current !== debouncedSearch) {
@@ -46,7 +44,6 @@ export const useEmployeeController = (initialParams = {}) => {
     }
   }, [debouncedSearch]);
 
-  // Immediate search submit handler (Enter key or Search button)
   const submitSearch = useCallback(
     (immediateValue) => {
       const val = immediateValue !== undefined ? immediateValue : search;
@@ -56,7 +53,6 @@ export const useEmployeeController = (initialParams = {}) => {
     [search]
   );
 
-  // Sync with URL query parameters
   useEffect(() => {
     const params = new URLSearchParams();
     if (page > 1) params.set('page', String(page));
@@ -127,7 +123,6 @@ export const useEmployeeController = (initialParams = {}) => {
   const normalizedEmployees = useMemo(() => {
     let list = Array.isArray(rawEmployees) ? rawEmployees : [];
 
-    // Client-side fallback filter if backend endpoint returns unfiltered array
     if (debouncedSearch?.trim()) {
       const q = debouncedSearch.toLowerCase().trim();
       list = list.filter(

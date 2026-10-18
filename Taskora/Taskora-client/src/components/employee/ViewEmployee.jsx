@@ -40,7 +40,6 @@ const ViewEmployee = ({ isOpen = false, employee = null, onClose, onEdit }) => {
         className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[92vh] flex flex-col overflow-hidden border border-slate-200 animate-scaleIn"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="px-5 py-4 bg-[#212529] text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <span className="font-bold text-base sm:text-lg tracking-tight">
@@ -59,10 +58,7 @@ const ViewEmployee = ({ isOpen = false, employee = null, onClose, onEdit }) => {
             ✕
           </button>
         </div>
-
-        {/* Content Body */}
         <div className="overflow-y-auto p-5 sm:p-6 space-y-5 text-sm">
-          {/* Profile Header */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-[#853A3A]/10 text-[#853A3A] font-extrabold text-lg flex items-center justify-center border border-[#853A3A]/20">
@@ -87,7 +83,6 @@ const ViewEmployee = ({ isOpen = false, employee = null, onClose, onEdit }) => {
             </span>
           </div>
 
-          {/* Details Grid */}
           <div className="grid grid-cols-2 gap-4 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs">
             <div>
               <span className="text-slate-400 font-bold uppercase block text-[10px] mb-0.5">
@@ -120,7 +115,6 @@ const ViewEmployee = ({ isOpen = false, employee = null, onClose, onEdit }) => {
             </div>
           </div>
 
-          {/* Leave Section if On Leave */}
           {employee.status === 'On Leave' && (
             <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 space-y-1.5 text-xs text-amber-900">
               <div className="font-bold flex items-center gap-1.5 uppercase text-[11px] text-amber-800">
@@ -136,7 +130,6 @@ const ViewEmployee = ({ isOpen = false, employee = null, onClose, onEdit }) => {
             </div>
           )}
 
-          {/* Skills */}
           <div>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
               Skills & Expertise
@@ -158,7 +151,6 @@ const ViewEmployee = ({ isOpen = false, employee = null, onClose, onEdit }) => {
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
           <button
             type="button"

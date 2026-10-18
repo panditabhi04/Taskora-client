@@ -33,7 +33,6 @@ const DashboardStats = ({
 }) => {
   return (
     <div className="w-full space-y-6 sm:space-y-8">
-      {/* Employee Stats Grid: 2 cols on mobile, 4 cols on tablet and desktop */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {employeeStats.map((item, index) => (
           <StatCard
@@ -45,7 +44,6 @@ const DashboardStats = ({
         ))}
       </div>
 
-      {/* Task Stats Grid: 2 cols on mobile, 3 cols on tablet, 6 cols on desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {taskStats.map((item, index) => (
           <StatCard
@@ -57,7 +55,6 @@ const DashboardStats = ({
         ))}
       </div>
 
-      {/* Employee Workload Table */}
       {showTable && (
         <div className="pt-2 sm:pt-4">
           <DashboardEmployeeTaskTable workload={workload} loading={loading} />

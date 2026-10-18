@@ -93,8 +93,6 @@ const TaskManager = ({ initialView = 'list' }) => {
       });
     } catch (err) {
       console.warn('Backend CSV export endpoint returned error, using fallback:', err.message);
-      
-      // Fallback per PDF specification ensuring overdue calculation consistency
       const headers = ['Task ID', 'Title', 'Assigned Employee', 'Department', 'Priority', 'Status', 'Start Date', 'Due Date'];
       const today = new Date();
       today.setHours(23, 59, 59, 999);
@@ -170,7 +168,6 @@ const TaskManager = ({ initialView = 'list' }) => {
 
   return (
     <div className="w-full">
-      {/* Toast Notification */}
       {toast.show && (
         <Toast
           message={toast.message}

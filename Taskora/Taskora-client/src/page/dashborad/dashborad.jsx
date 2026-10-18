@@ -46,8 +46,6 @@ const Dashboard = () => {
           {loading ? 'Refreshing...' : 'Refresh Data'}
         </button>
       </div>
-
-      {/* Error Banner */}
       {error && (
         <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 flex items-start justify-between gap-3">
           <div className="flex items-center gap-2 text-red-700 text-sm">
@@ -68,8 +66,6 @@ const Dashboard = () => {
           </button>
         </div>
       )}
-
-      {/* Stats Cards & Employee Workload Table */}
       <DashboardStats
         employeeStats={employeeStats}
         taskStats={taskStats}

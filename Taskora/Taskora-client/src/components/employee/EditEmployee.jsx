@@ -36,7 +36,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
   const [formError, setFormError] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
-  // Pre-fill form when employee prop is available
   useEffect(() => {
     if (employee) {
       setEmployeeId(employee.employeeId || '');
@@ -213,7 +212,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto py-4 sm:py-6 px-2 sm:px-4">
-      {/* Toast Notification */}
       {toast.show && (
         <Toast
           message={toast.message}
@@ -222,7 +220,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
         />
       )}
 
-      {/* Back button */}
       <div className="mb-3">
         <button
           type="button"
@@ -234,15 +231,11 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
         </button>
       </div>
 
-      {/* Centered Heading */}
       <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 text-center mb-6 tracking-tight">
         Edit Employee
       </h1>
-
-      {/* Form Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Row 1: Employee ID & Full Name */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -277,7 +270,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
             </div>
           </div>
 
-          {/* Row 2: Email & Phone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -312,7 +304,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
             </div>
           </div>
 
-          {/* Row 3: Department & Role */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -357,7 +348,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
             </div>
           </div>
 
-          {/* Row 4: Joining Date & Status */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -400,7 +390,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
             </div>
           </div>
 
-          {/* Conditional Row 5: Leave Dates (Displayed only when Status is "On Leave") */}
           {status === 'On Leave' && (
             <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 space-y-3 transition-all animate-fadeIn">
               <div className="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
@@ -441,7 +430,6 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
             </div>
           )}
 
-          {/* Row 6: Skills */}
           <div>
             <label className="block text-sm font-bold text-slate-800 mb-2">
               Skills
@@ -485,14 +473,12 @@ const EditEmployee = ({ employee, onBack, onEmployeeUpdated }) => {
             )}
           </div>
 
-          {/* Inline Error Message Banner */}
           {formError && (
             <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm font-medium animate-fadeIn">
               ⚠️ {formError}
             </div>
           )}
 
-          {/* Submit Button */}
           <div className="pt-2">
             <button
               type="submit"

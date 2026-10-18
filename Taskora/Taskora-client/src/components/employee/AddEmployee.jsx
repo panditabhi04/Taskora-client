@@ -19,33 +19,58 @@ const statusOptions = ['Active', 'Inactive', 'On Leave'];
 const AddEmployee = ({ onBack, onEmployeeCreated }) => {
   const navigate = useNavigate();
 
-  const [employeeId, setEmployeeId] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [department, setDepartment] = useState('');
-  const [role, setRole] = useState('');
-  const [joiningDate, setJoiningDate] = useState('');
-  const [status, setStatus] = useState('Active');
-  const [skills, setSkills] = useState([]);
-  const [skillInput, setSkillInput] = useState('');
-  const [leaveStart, setLeaveStart] = useState('');
-  const [leaveEnd, setLeaveEnd] = useState('');
+  const [form, setForm] = useState({
+    employeeId: '',
+    fullName: '',
+    email: '',
+    phone: '',
+    department: '',
+    role: '',
+    joiningDate: '',
+    status: 'Active',
+    skills: [],
+    leaveStart: '',
+    leaveEnd: '',
+  });
 
+  const [skillInput, setSkillInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
+  const {
+    employeeId,
+    fullName,
+    email,
+    phone,
+    department,
+    role,
+    joiningDate,
+    status,
+    skills,
+    leaveStart,
+    leaveEnd,
+  } = form;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setFormError('');
+  };
+
   const handleAddSkill = () => {
     const trimmed = skillInput.trim();
     if (trimmed && !skills.includes(trimmed)) {
-      setSkills([...skills, trimmed]);
+      setForm((prev) => ({ ...prev, skills: [...prev.skills, trimmed] }));
       setSkillInput('');
     }
   };
 
   const handleRemoveSkill = (skillToRemove) => {
-    setSkills(skills.filter((s) => s !== skillToRemove));
+    setForm((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((s) => s !== skillToRemove),
+    }));
   };
 
   const handleKeyDownSkill = (e) => {
@@ -129,7 +154,6 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
     setFormError('');
 
     try {
-      // Include any lingering skill typed in the input
       let finalSkills = [...skills];
       if (skillInput.trim() && !finalSkills.includes(skillInput.trim())) {
         finalSkills.push(skillInput.trim());
@@ -184,7 +208,6 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto py-4 sm:py-6 px-2 sm:px-4">
-      {/* Toast Notification */}
       {toast.show && (
         <Toast
           message={toast.message}
@@ -193,7 +216,6 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
         />
       )}
 
-      {/* Back button */}
       <div className="mb-3">
         <button
           type="button"
@@ -205,15 +227,11 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
         </button>
       </div>
 
-      {/* Centered Heading */}
       <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 text-center mb-6 tracking-tight">
         Add Employee
       </h1>
-
-      {/* Form Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Row 1: Employee ID & Full Name */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -221,11 +239,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <input
                 type="text"
+                name="employeeId"
                 value={employeeId}
-                onChange={(e) => {
-                  setEmployeeId(e.target.value);
-                  setFormError('');
-                }}
+                onChange={handleChange}
                 placeholder="e.g. EMP-010"
                 className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all"
               />
@@ -237,18 +253,15 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <input
                 type="text"
+                name="fullName"
                 value={fullName}
-                onChange={(e) => {
-                  setFullName(e.target.value);
-                  setFormError('');
-                }}
+                onChange={handleChange}
                 placeholder="e.g. Vikram Joshi"
                 className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all"
               />
             </div>
           </div>
 
-          {/* Row 2: Email & Phone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -256,11 +269,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <input
                 type="email"
+                name="email"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setFormError('');
-                }}
+                onChange={handleChange}
                 placeholder="e.g. vikram.joshi@example.com"
                 className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all"
               />
@@ -272,18 +283,15 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <input
                 type="tel"
+                name="phone"
                 value={phone}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                  setFormError('');
-                }}
+                onChange={handleChange}
                 placeholder="e.g. 9876543219"
                 className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all"
               />
             </div>
           </div>
 
-          {/* Row 3: Department & Role */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -291,11 +299,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <div className="relative">
                 <select
+                  name="department"
                   value={department}
-                  onChange={(e) => {
-                    setDepartment(e.target.value);
-                    setFormError('');
-                  }}
+                  onChange={handleChange}
                   className="w-full appearance-none bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 pr-8 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
                 >
                   <option value="">Select Department...</option>
@@ -317,18 +323,15 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <input
                 type="text"
+                name="role"
                 value={role}
-                onChange={(e) => {
-                  setRole(e.target.value);
-                  setFormError('');
-                }}
+                onChange={handleChange}
                 placeholder="e.g. Sales Manager"
                 className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all"
               />
             </div>
           </div>
 
-          {/* Row 4: Joining Date & Status */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-800 mb-2">
@@ -336,11 +339,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <input
                 type="date"
+                name="joiningDate"
                 value={joiningDate}
-                onChange={(e) => {
-                  setJoiningDate(e.target.value);
-                  setFormError('');
-                }}
+                onChange={handleChange}
                 className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
               />
             </div>
@@ -351,11 +352,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
               </label>
               <div className="relative">
                 <select
+                  name="status"
                   value={status}
-                  onChange={(e) => {
-                    setStatus(e.target.value);
-                    setFormError('');
-                  }}
+                  onChange={handleChange}
                   className="w-full appearance-none bg-white border border-slate-300 rounded-lg px-3.5 py-2.5 pr-8 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
                 >
                   {statusOptions.map((st) => (
@@ -371,7 +370,6 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
             </div>
           </div>
 
-          {/* Conditional Row 5: Leave Dates (Displayed only when Status is "On Leave") */}
           {status === 'On Leave' && (
             <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 space-y-3 transition-all animate-fadeIn">
               <div className="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
@@ -385,11 +383,9 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
                   </label>
                   <input
                     type="date"
+                    name="leaveStart"
                     value={leaveStart}
-                    onChange={(e) => {
-                      setLeaveStart(e.target.value);
-                      setFormError('');
-                    }}
+                    onChange={handleChange}
                     className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
                   />
                 </div>
@@ -399,12 +395,10 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
                   </label>
                   <input
                     type="date"
+                    name="leaveEnd"
                     min={leaveStart}
                     value={leaveEnd}
-                    onChange={(e) => {
-                      setLeaveEnd(e.target.value);
-                      setFormError('');
-                    }}
+                    onChange={handleChange}
                     className="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#853A3A]/30 focus:border-[#853A3A] transition-all cursor-pointer"
                   />
                 </div>
@@ -412,7 +406,6 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
             </div>
           )}
 
-          {/* Row 6: Skills */}
           <div>
             <label className="block text-sm font-bold text-slate-800 mb-2">
               Skills
@@ -434,7 +427,6 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
                 + Add
               </button>
             </div>
-            {/* Skills tag list */}
             {skills.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {skills.map((skill) => (
@@ -457,14 +449,12 @@ const AddEmployee = ({ onBack, onEmployeeCreated }) => {
             )}
           </div>
 
-          {/* Inline Error Message Banner */}
           {formError && (
             <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm font-medium animate-fadeIn">
               ⚠️ {formError}
             </div>
           )}
 
-          {/* Submit Button */}
           <div className="pt-2">
             <button
               type="submit"

@@ -18,7 +18,6 @@ function App() {
             <Route path="/tasks/add" element={<Task initialView="add" />} />
             <Route path="/employees" element={<Employee />} />
             <Route path="/employees/add" element={<Employee initialView="add" />} />
-            {/* Fallback */}
             <Route path="*" element={<Navigate to="/tasks" replace />} />
           </Routes>
         </main>

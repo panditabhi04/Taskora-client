@@ -34,9 +34,7 @@ const TaskHeaderActions = ({
 
   return (
     <div className="w-full space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-      {/* Top Row: Search & Action Buttons (Add Task, Export CSV) */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        {/* Search input + Search button */}
         <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full lg:max-w-md">
           <div className="relative flex-1">
             <input
@@ -73,8 +71,6 @@ const TaskHeaderActions = ({
             Search
           </button>
         </form>
-
-        {/* Action Buttons: Add Task & Export To Csv */}
         <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <button
             type="button"
@@ -107,10 +103,8 @@ const TaskHeaderActions = ({
         </div>
       </div>
 
-      {/* Bottom Row: Filter Dropdowns */}
-      {/* Mobile: 2-column grid; Tablet/Desktop: flexible row */}
+     
       <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5">
-        {/* Department Filter */}
         <div className="relative w-full sm:w-auto sm:min-w-[130px]">
           <select
             value={selectedDepartment}
@@ -128,8 +122,6 @@ const TaskHeaderActions = ({
             ▼
           </div>
         </div>
-
-        {/* Priority Filter */}
         <div className="relative w-full sm:w-auto sm:min-w-[110px]">
           <select
             value={selectedPriority}
@@ -147,8 +139,6 @@ const TaskHeaderActions = ({
             ▼
           </div>
         </div>
-
-        {/* Status Filter */}
         <div className="relative w-full sm:w-auto sm:min-w-[110px]">
           <select
             value={selectedStatus}
@@ -167,7 +157,6 @@ const TaskHeaderActions = ({
           </div>
         </div>
 
-        {/* Due Date Filter */}
         <div className="relative w-full sm:w-auto sm:min-w-[150px]">
           <select
             value={selectedDueDateFilter}
@@ -185,7 +174,6 @@ const TaskHeaderActions = ({
           </div>
         </div>
 
-        {/* Reset Filters button */}
         {hasActiveFilters && (
           <button
             type="button"

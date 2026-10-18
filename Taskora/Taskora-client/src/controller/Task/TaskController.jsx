@@ -70,7 +70,6 @@ export const useTaskController = (initialParams = {}) => {
   const [status, setStatus] = useState(urlStatus);
   const [dueDateFilter, setDueDateFilter] = useState(urlDueDate);
 
-  // Debounce search input by 400ms to avoid unnecessary API requests
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -79,7 +78,6 @@ export const useTaskController = (initialParams = {}) => {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // When debounced search value changes, reset page to 1
   const prevDebouncedSearchRef = useRef(debouncedSearch);
   useEffect(() => {
     if (prevDebouncedSearchRef.current !== debouncedSearch) {
@@ -88,14 +86,12 @@ export const useTaskController = (initialParams = {}) => {
     }
   }, [debouncedSearch]);
 
-  // Immediate search submit handler (e.g. Enter key or Search button click)
   const submitSearch = useCallback((immediateValue) => {
     const val = immediateValue !== undefined ? immediateValue : search;
     setDebouncedSearch(val);
     setPage(1);
   }, [search]);
 
-  // Synchronize state with URL query parameters per assignment requirements
   useEffect(() => {
     const params = new URLSearchParams();
     if (page > 1) params.set('page', String(page));

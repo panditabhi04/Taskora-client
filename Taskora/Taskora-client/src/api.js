@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Base API URL from environment variable, fallback to default local backend
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const api = axios.create({
@@ -199,7 +198,7 @@ export const exportTasksCsvAPI = async (params = {}) => {
         const parsed = JSON.parse(errorText);
         errorMessage = parsed.message || parsed.error || errorMessage;
       } catch {
-        // use default message
+
       }
     } else {
       errorMessage =

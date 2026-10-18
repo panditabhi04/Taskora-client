@@ -1,11 +1,6 @@
 import React from 'react';
 import TaskManager from '../../components/task/TaskManager.jsx';
 
-/**
- * Task Page Component
- * Located at: src/page/task/Task.jsx
- * Renders the Task Management page incorporating all task subcomponents.
- */
 const Task = ({ initialView = 'list' }) => {
   return (
     <div className="w-full pb-8 sm:pb-12">
@@ -17,8 +12,6 @@ const Task = ({ initialView = 'list' }) => {
           Manage, track, and assign organizational tasks across team members.
         </p>
       </div>
-
-      {/* Main Task Component (Combines Search, Filters, Add/Export, Table & Pagination) */}
       <TaskManager initialView={initialView} />
     </div>
   );

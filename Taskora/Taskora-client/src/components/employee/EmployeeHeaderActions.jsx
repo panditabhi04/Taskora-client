@@ -36,9 +36,8 @@ const EmployeeHeaderActions = ({
 
   return (
     <div className="w-full space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-      {/* Top Row: Search & Add Employee Button */}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        {/* Search input + Search button */}
         <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full sm:max-w-md">
           <div className="relative flex-1">
             <input
@@ -76,7 +75,6 @@ const EmployeeHeaderActions = ({
           </button>
         </form>
 
-        {/* Action Button: Add Employee */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             type="button"
@@ -89,9 +87,7 @@ const EmployeeHeaderActions = ({
         </div>
       </div>
 
-      {/* Bottom Row: Filter Dropdowns */}
       <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3">
-        {/* Department Filter */}
         <div className="relative min-w-[140px] flex-1 sm:flex-initial">
           <select
             value={selectedDepartment}
@@ -110,7 +106,6 @@ const EmployeeHeaderActions = ({
           </div>
         </div>
 
-        {/* Status Filter */}
         <div className="relative min-w-[130px] flex-1 sm:flex-initial">
           <select
             value={selectedStatus}
@@ -129,7 +124,6 @@ const EmployeeHeaderActions = ({
           </div>
         </div>
 
-        {/* Reset Filters button */}
         {hasActiveFilters && (
           <button
             type="button"

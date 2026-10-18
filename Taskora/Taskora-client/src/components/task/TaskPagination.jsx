@@ -1,10 +1,5 @@
 import React from 'react';
 
-/**
- * TaskPagination Component
- * Responsive across Mobile, Tablet, and Desktop.
- * Renders the pagination controls and item count summary.
- */
 const TaskPagination = ({
   currentPage = 1,
   totalPages = 3,
@@ -15,7 +10,6 @@ const TaskPagination = ({
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
-  // Generate page numbers array
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const handlePageClick = (page) => {
@@ -28,7 +22,7 @@ const TaskPagination = ({
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3.5 pb-2 px-1 text-xs sm:text-sm select-none">
-      {/* Left side summary */}
+      
       <div className="text-slate-600 font-normal text-center sm:text-left">
         Showing{' '}
         <span className="font-semibold text-slate-800">
@@ -37,9 +31,9 @@ const TaskPagination = ({
         of <span className="font-semibold text-slate-800">{totalItems}</span> tasks
       </div>
 
-      {/* Right side pagination buttons */}
+      
       <div className="flex items-center space-x-1 sm:space-x-1.5">
-        {/* Previous button */}
+        
         <button
           type="button"
           onClick={() => handlePageClick(currentPage - 1)}
@@ -56,7 +50,7 @@ const TaskPagination = ({
           </svg>
         </button>
 
-        {/* Page number buttons */}
+        
         {pages.map((page) => {
           const isActive = page === currentPage;
           return (
@@ -75,7 +69,7 @@ const TaskPagination = ({
           );
         })}
 
-        {/* Next button */}
+        
         <button
           type="button"
           onClick={() => handlePageClick(currentPage + 1)}

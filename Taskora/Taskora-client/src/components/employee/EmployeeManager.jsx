@@ -92,7 +92,7 @@ const EmployeeManager = ({ initialView = 'list' }) => {
 
   return (
     <div className="w-full">
-      {/* Toast Notification */}
+
       {toast.show && (
         <Toast
           message={toast.message}
@@ -101,7 +101,7 @@ const EmployeeManager = ({ initialView = 'list' }) => {
         />
       )}
 
-      {/* Error Banner */}
+      
       {error && (
         <div className="mb-4 p-3.5 rounded-lg bg-red-50 border border-red-200 flex items-center justify-between text-xs sm:text-sm text-red-700">
           <span>{error}</span>
@@ -115,7 +115,7 @@ const EmployeeManager = ({ initialView = 'list' }) => {
         </div>
       )}
 
-      {/* Header Actions (Search & Filters) */}
+    
       <EmployeeHeaderActions
         searchQuery={search}
         onSearchChange={setSearch}
@@ -135,7 +135,7 @@ const EmployeeManager = ({ initialView = 'list' }) => {
         onAddEmployee={handleAddEmployeeClick}
       />
 
-      {/* Employees Table */}
+      
       <EmployeeTable
         employees={employees}
         loading={loading}
